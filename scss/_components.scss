@@ -1,0 +1,16 @@
+.quiz-config {
+  background: var(--color-white);
+  padding: 1.5em;
+
+  &__btn {
+    text-transform: uppercase;
+    border: none;
+    background-color: var(--color-primary);
+    color: var(--color-white);
+    font-weight: 400;
+    font-family: inherit;
+    letter-spacing: 1px;
+    padding: 1em 4em;
+    border-radius: 4px;
+  }
+}

@@ -1,0 +1,15 @@
+{
+  "name": "quiz_app",
+  "version": "1.0.0",
+  "description": "A simple little quiz app to test your trivia skills.",
+  "main": "app.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "scss": "node-sass --watch ./scss/main.scss --o ./"
+  },
+  "author": "Dejan Antic",
+  "license": "ISC",
+  "dependencies": {
+    "node-sass": "^4.13.1"
+  }
+}
