@@ -2,6 +2,17 @@
   background: var(--color-white);
   padding: 1.5em;
 
+  &__group {
+    margin-top: 2rem;
+    display: flex;
+    flex-flow: column wrap;
+
+    & > * {
+      width: 50%;
+      font: inherit;
+    }
+  }
+
   &__btn {
     text-transform: uppercase;
     border: none;
@@ -12,5 +23,6 @@
     letter-spacing: 1px;
     padding: 1em 4em;
     border-radius: 4px;
+    cursor: pointer;
   }
 }

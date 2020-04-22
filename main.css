@@ -33,6 +33,13 @@ input {
 .quiz-config {
   background: var(--color-white);
   padding: 1.5em; }
+  .quiz-config__group {
+    margin-top: 2rem;
+    display: flex;
+    flex-flow: column wrap; }
+    .quiz-config__group > * {
+      width: 50%;
+      font: inherit; }
   .quiz-config__btn {
     text-transform: uppercase;
     border: none;
@@ -42,10 +49,8 @@ input {
     font-family: inherit;
     letter-spacing: 1px;
     padding: 1em 4em;
-    border-radius: 4px; }
-
-* {
-  outline: 1px solid var(--color-green); }
+    border-radius: 4px;
+    cursor: pointer; }
 
 .wrapper {
   max-width: 60rem;
@@ -62,3 +67,9 @@ input {
 
 .app {
   padding: 2rem; }
+
+.u-mg-top-sm {
+  margin-top: 1rem; }
+
+.u-mg-top-md {
+  margin-top: 2rem; }
