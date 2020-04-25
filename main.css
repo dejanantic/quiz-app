@@ -20,16 +20,6 @@ body {
 input {
   font: inherit; }
 
-:root {
-  --color-primary: hsl(201, 98%, 41%);
-  --color-primary-light: hsl(206, 100%, 68%);
-  --color-primary-dark: hsl(206, 100%, 31%);
-  --color-red: hsl(0, 100%, 42%);
-  --color-green: hsl(145, 100%, 39%);
-  --color-white: hsl(0, 0%, 100%);
-  --color-background: hsl(0, 0%, 100%);
-  --color-text-primary: hsl(0, 0%, 24%); }
-
 .quiz-config {
   background: var(--color-white);
   padding: 1.5em; }
@@ -38,8 +28,9 @@ input {
     display: flex;
     flex-flow: column wrap; }
     .quiz-config__group > * {
-      width: 50%;
       font: inherit; }
+    .quiz-config__group > *:not(label) {
+      width: 50%; }
   .quiz-config__btn {
     text-transform: uppercase;
     border: none;
@@ -51,6 +42,44 @@ input {
     padding: 1em 4em;
     border-radius: 4px;
     cursor: pointer; }
+
+.loader {
+  background: var(--color-white);
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  visibility: hidden;
+  opacity: 0; }
+  .loader::before, .loader::after {
+    content: "";
+    position: absolute;
+    border-radius: 50%;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%); }
+  .loader::before {
+    background-color: var(--color-primary);
+    width: 5em;
+    height: 5em; }
+  .loader::after {
+    background-color: var(--color-white);
+    width: 3em;
+    height: 3em; }
+  .loader.active {
+    visibility: visible;
+    opacity: 1; }
+
+#response {
+  display: none;
+  background: var(--color-green-light);
+  border: 1px solid var(--color-green);
+  color: var(--color-green);
+  padding: 1rem; }
+
+#response.show {
+  display: block; }
 
 .wrapper {
   max-width: 60rem;
@@ -73,3 +102,14 @@ input {
 
 .u-mg-top-md {
   margin-top: 2rem; }
+
+:root {
+  --color-primary: hsl(201, 98%, 41%);
+  --color-primary-light: hsl(206, 100%, 68%);
+  --color-primary-dark: hsl(206, 100%, 31%);
+  --color-red: hsl(0, 100%, 42%);
+  --color-green: hsl(145, 100%, 39%);
+  --color-green-light: hsl(145, 100%, 80%);
+  --color-white: hsl(0, 0%, 100%);
+  --color-background: hsl(0, 0%, 100%);
+  --color-text-primary: hsl(0, 0%, 24%); }

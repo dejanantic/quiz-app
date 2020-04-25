@@ -8,8 +8,11 @@
     flex-flow: column wrap;
 
     & > * {
-      width: 50%;
       font: inherit;
+    }
+
+    & > *:not(label) {
+      width: 50%;
     }
   }
 
@@ -25,4 +28,54 @@
     border-radius: 4px;
     cursor: pointer;
   }
+}
+
+.loader {
+  background: var(--color-white);
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  visibility: hidden;
+  opacity: 0;
+
+  &::before,
+  &::after {
+    content: "";
+    position: absolute;
+    border-radius: 50%;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+  }
+
+  &::before {
+    background-color: var(--color-primary);
+    width: 5em;
+    height: 5em;
+  }
+
+  &::after {
+    background-color: var(--color-white);
+    width: 3em;
+    height: 3em;
+  }
+
+  &.active {
+    visibility: visible;
+    opacity: 1;
+  }
+}
+
+#response {
+  display: none;
+  background: var(--color-green-light);
+  border: 1px solid var(--color-green);
+  color: var(--color-green);
+  padding: 1rem;
+}
+
+#response.show {
+  display: block;
 }
