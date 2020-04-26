@@ -3,39 +3,16 @@ const modelController = (function () {
 
   let _questions = [];
   let _score = 0;
-  let _apiEndpoint = 'https://opentdb.com/api.php?';
 
-  let request = new XMLHttpRequest();
-  request.onload = function () {
-    if (this.status === 200) {
-      (function ({ results, ...rest }) {
-        _questions = results;
-        console.log(results);
-      })(JSON.parse(this.response))
-    } else console.log('Couldn\'t load questions. Try again.');
-  }
-
-  function fetchQuestions(formData) {
-    let query = [];
-    for (let [key, value] of formData) {
-      if (value === 'any') continue;
-      query.push(`${key}=${value}`);
-    }
-
-    query = query.join('&');
-
-    console.log(`${_apiEndpoint}${query}`);
-
-    request.open('GET', `${_apiEndpoint}${query}`);
-    request.send();
+  function loadQuestions(questions) {
+    _questions = [...questions];
+    _score = 0;
   }
 
   return {
     // Public methods
-    fetchQuestions: fetchQuestions,
-    get questions() {
-      return _questions;
-    }
+    loadQuestions: loadQuestions,
+    questions: () => _questions
   }
 
 })();
@@ -52,8 +29,16 @@ const viewController = (function () {
     else loader.classList.add('active');
   }
 
+  function _generateQuestionHTML(question) {
+    return ``
+  }
+
   function buildQuestions(questions) {
     responseField.textContent = JSON.stringify(questions);
+    questions.forEach(question => {
+
+    });
+
     if (!responseField.classList.contains('show')) responseField.classList.add('show');
   }
 
@@ -73,6 +58,17 @@ const app = (function (view, model) {
   // 2. fetch quiz questions
   // 3. generate first question
   // 4. hide loader
+  const _apiEndpoint = 'https://opentdb.com/api.php?';
+  let request = new XMLHttpRequest();
+  request.onload = function () {
+    if (this.status === 200) {
+      const res = JSON.parse(this.response);
+      model.loadQuestions(res.results);
+      view.buildQuestions(model.questions());
+
+      view.toggleLoader();
+    } else console.log('Couldn\'t load questions. Try again.');
+  }
 
   // USER ANSWERS THE QUETSION
   // 1. user selects an answer
@@ -84,27 +80,36 @@ const app = (function (view, model) {
   // b. hide loader
   //#endregion
 
+  function createQueryParams(formData) {
+    let query = [];
+    for (let [key, value] of formData) {
+      if (value === 'any') continue;
+      query.push(`${key}=${value}`);
+    }
+    return query.join('&');
+  }
+
   view.form.addEventListener('submit', function (e) {
     e.preventDefault();
 
     const data = new FormData(this);
 
     // Patched up wait for the response :)
-    model.fetchQuestions(data);
-
+    const queryParams = createQueryParams(data);
+    request.open('GET', `${_apiEndpoint}${queryParams}`);
+    request.send();
     view.toggleLoader();
-    setTimeout(() => {
-      view.buildQuestions(model.questions);
-      view.toggleLoader();
-    }, 1000);
-  })
+  });
+
+  document.querySelectorAll('button').addEventListener('click', function () {
+    model.setAnswer(quiestionIndex, questuion); // here next questions should be selected
+    view.setActiveQuestion(model.getActiveQuestionIndex());
+  });
 
   return {
-
-    init() { console.log('app initialized'); },
+    init: () => { },
     view,
     model
-
   }
 
 })(viewController, modelController);
