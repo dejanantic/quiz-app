@@ -44,10 +44,7 @@ input {
     padding: 1em 4em;
     border-radius: 4px; }
 
-* {
-  outline: 1px solid var(--color-green); }
-
-.wrapper {
+#root {
   max-width: 60rem;
   margin: 0 auto;
   height: 100vh; }
@@ -60,5 +57,6 @@ input {
   .header__score {
     margin-left: auto; }
 
-.app {
-  padding: 2rem; }
+.main {
+  padding: 2rem;
+  height: 50%; }
