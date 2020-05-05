@@ -1,9 +1,20 @@
 'use strict'
 const modelController = (function () {
 
+  let _questions;
+
+
+  function saveQuestions(responseResults) {
+    _questions = [...responseResults];
+  }
+
   return {
     init: () => {
       console.log('Model controller initialized');
+    },
+    saveQuestions: saveQuestions,
+    get questions() {
+      return _questions;
     }
   }
 })();
@@ -193,7 +204,31 @@ const app = (function (view, model) {
       console.log(_URL);
     };
 
+    // fetch questions
+    fetchQuestions(_URL)
   });
+
+  document.addEventListener('questions-ready', function readyToLoadQuestionsHTML(e) {
+    console.log(`Les go!!! ${e.detail.message}`);
+  })
+
+  function fetchQuestions(URL) {
+    const request = new XMLHttpRequest();
+    request.onload = function handleResponse() {
+      if (this.status === 200) {
+        const res = JSON.parse(this.response);
+        model.saveQuestions(res.results)
+        this.dispatchEvent(new CustomEvent('questions-ready', {
+          detail: {
+            message: 'Dejan je car'
+          }
+        }));
+      }
+    }
+
+    request.open('GET', URL);
+    request.send();
+  }
 
   return {
     init: () => {
