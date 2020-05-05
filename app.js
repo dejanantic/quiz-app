@@ -134,8 +134,8 @@ const viewController = (function () {
     return configGroup;
   }
 
-  function resetView() {
-    console.log('everything deleted');
+  function clearView() {
+    if (_main.firstElementChild) _main.remove(_main.firstElementChild);
   }
 
   function showLoader() {
@@ -161,18 +161,29 @@ const viewController = (function () {
   }
 
   return {
-    init: () => {
+    init() {
+      _main.append(createQuizConfig());
       console.log('View controller initialized');
     },
-    app: _app,
     config: createQuizConfig,
     main: _main,
     showLoader: showLoader,
-    hideLoader: hideLoader
+    hideLoader: hideLoader,
+    clearView: clearView,
   }
 })();
 
 const app = (function (view, model) {
+
+  const _apiEndpoint = 'https://opentdb.com/api.php';
+  const _URL = new URL(_apiEndpoint);
+
+  // Event listeners and stuff
+  document.addEventListener('submit', function getFormData(e) {
+    e.preventDefault();
+
+    const data = new FormData(e.target);
+  });
 
   return {
     init: () => {
@@ -181,11 +192,12 @@ const app = (function (view, model) {
       console.log('app initialized');
     },
     model,
-    view
+    view,
+    url: _URL,
   }
 })(viewController, modelController);
 
-// app.init();
+app.init();
 
 // FETCHING QUIZ DATA
 // 1. display loader
