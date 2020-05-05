@@ -12,6 +12,7 @@ const viewController = (function () {
 
   const _app = _getElement('#root');
   const _main = _createElement('main', 'main');
+  const _loader = _createElement('div', 'loader');
 
   // Header
   const _header = _createElement('header', 'header');
@@ -26,8 +27,7 @@ const viewController = (function () {
   _par.append(_span);
   _score.append(_par);
   _header.append(_logo, _score);
-  _app.append(_header);
-  _app.append(_main);
+  _app.append(_header, _main, _loader);
 
   // Create Quiz Configurator
   function createQuizConfig() {
@@ -138,6 +138,14 @@ const viewController = (function () {
     console.log('everything deleted');
   }
 
+  function showLoader() {
+    _loader.classList.add('active');
+  }
+
+  function hideLoader() {
+    _loader.classList.remove('active');
+  }
+
   function _getElement(selector) {
     const element = document.querySelector(selector);
 
@@ -158,32 +166,38 @@ const viewController = (function () {
     },
     app: _app,
     config: createQuizConfig,
+    main: _main,
+    showLoader: showLoader,
+    hideLoader: hideLoader
   }
 })();
 
 const app = (function (view, model) {
-  // FETCHING QUIZ DATA
-  // 1. display loader
-  // 2. fetch quiz questions
-  // 3. generate first question
-  // 4. hide loader
-
-  // USER ANSWERS THE QUETSION
-  // 1. user selects an answer
-  // 2. prevent submiting more than 1 answer
-  // 2. answer validation
-  // 3. update score
-  // a. show loader after 500ms
-  // 4. show next question
-  // b. hide loader
 
   return {
     init: () => {
       view.init();
       model.init();
       console.log('app initialized');
-    }
+    },
+    model,
+    view
   }
 })(viewController, modelController);
 
-app.init();
+// app.init();
+
+// FETCHING QUIZ DATA
+// 1. display loader
+// 2. fetch quiz questions
+// 3. generate first question
+// 4. hide loader
+
+// USER ANSWERS THE QUETSION
+// 1. user selects an answer
+// 2. prevent submiting more than 1 answer
+// 2. answer validation
+// 3. update score
+// a. show loader after 500ms
+// 4. show next question
+// b. hide loader

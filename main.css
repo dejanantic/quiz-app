@@ -33,6 +33,13 @@ input {
 .quiz-config {
   background: var(--color-white);
   padding: 1.5em; }
+  .quiz-config__group {
+    margin-top: 2rem; }
+    .quiz-config__group > :not(label) {
+      display: block;
+      width: 50%; }
+    .quiz-config__group select {
+      font: inherit; }
   .quiz-config__btn {
     text-transform: uppercase;
     border: none;
@@ -43,6 +50,28 @@ input {
     letter-spacing: 1px;
     padding: 1em 4em;
     border-radius: 4px; }
+
+.loader {
+  background-color: var(--color-white);
+  visibility: hidden; }
+  .loader.active {
+    visibility: visible; }
+  .loader::before, .loader::after {
+    content: "";
+    position: absolute;
+    display: block;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    border-radius: 50%; }
+  .loader::before {
+    background-color: var(--color-primary);
+    width: 9rem;
+    height: 9rem; }
+  .loader::after {
+    background-color: var(--color-white);
+    width: 5.5rem;
+    height: 5.5rem; }
 
 #root {
   max-width: 60rem;
@@ -60,3 +89,16 @@ input {
 .main {
   padding: 2rem;
   height: 50%; }
+
+.loader {
+  position: absolute;
+  top: 0;
+  right: 0;
+  bottom: 0;
+  left: 0; }
+
+.u-mg-top-sm {
+  margin-top: 1rem; }
+
+.u-mg-top-md {
+  margin-top: 2rem; }
