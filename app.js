@@ -179,10 +179,20 @@ const app = (function (view, model) {
   const _URL = new URL(_apiEndpoint);
 
   // Event listeners and stuff
-  document.addEventListener('submit', function getFormData(e) {
+  // Maybe take the form out of the quizConfig function
+  document.addEventListener('submit', function processFormData(e) {
     e.preventDefault();
 
+    view.showLoader();
+
     const data = new FormData(e.target);
+    for (let [key, value] of data) {
+      if (value === 'any') continue;
+      _URL.searchParams.set(key, value);
+
+      console.log(_URL);
+    };
+
   });
 
   return {
