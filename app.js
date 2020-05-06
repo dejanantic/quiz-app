@@ -3,7 +3,6 @@ const modelController = (function () {
 
   let _questions;
 
-
   function saveQuestions(responseResults) {
     _questions = [...responseResults];
   }
@@ -40,84 +39,79 @@ const viewController = (function () {
   _header.append(_logo, _score);
   _app.append(_header, _main, _loader);
 
+
   // Create Quiz Configurator
-  function createQuizConfig() {
+  const form = _createElement('form', 'quiz-config');
+  form.id = 'quiz-config';
+  form.noValidate = true;
+  const formHeading = _createElement('h2', 'heading-secondary');
+  formHeading.textContent = 'Customize your quiz';
 
-    const form = _createElement('form', 'quiz-config');
-    form.id = 'quiz-config';
-    form.noValidate = true;
-    const formHeading = _createElement('h2', 'heading-secondary');
-    formHeading.textContent = 'Customize your quiz';
+  const amountGroup = _createElement('div', 'quiz-config__group');
+  const amountLabel = _createElement('label', 'quiz-config__label');
+  amountLabel.htmlFor = 'trivia_amount';
+  amountLabel.textContent = 'Number of questions';
+  const inputAmount = _createElement('input', 'quiz-config__input');
+  inputAmount.type = 'number';
+  inputAmount.name = 'amount';
+  inputAmount.id = 'trivia_amount';
+  inputAmount.min = 1;
+  inputAmount.max = 50;
+  inputAmount.value = 10;
+  amountGroup.append(amountLabel, inputAmount);
 
-    const amountGroup = _createElement('div', 'quiz-config__group');
-    const amountLabel = _createElement('label', 'quiz-config__label');
-    amountLabel.htmlFor = 'trivia_amount';
-    amountLabel.textContent = 'Number of questions';
-    const inputAmount = _createElement('input', 'quiz-config__input');
-    inputAmount.type = 'number';
-    inputAmount.name = 'amount';
-    inputAmount.id = 'trivia_amount';
-    inputAmount.min = 1;
-    inputAmount.max = 50;
-    inputAmount.value = 10;
-    amountGroup.append(amountLabel, inputAmount);
+  const triviaCategories = [
+    { value: 'any', option: 'Any Category' },
+    { value: '9', option: 'General Knowledge' },
+    { value: '10', option: 'Entertainment: Books' },
+    { value: '11', option: 'Entertainment: Film' },
+    { value: '12', option: 'Entertainment: Music' },
+    { value: '13', option: 'Entertainment: Musicals & Theatres' },
+    { value: '14', option: 'Entertainment: Television' },
+    { value: '15', option: 'Entertainment: Video Games' },
+    { value: '16', option: 'Entertainment: Board Games' },
+    { value: '17', option: 'Science & Nature' },
+    { value: '18', option: 'Science: Computers' },
+    { value: '19', option: 'Science: Mathematics' },
+    { value: '20', option: 'Mythology' },
+    { value: '21', option: 'Sports' },
+    { value: '22', option: 'Geography' },
+    { value: '23', option: 'History' },
+    { value: '24', option: 'Politics' },
+    { value: '25', option: 'Art' },
+    { value: '26', option: 'Celebrities' },
+    { value: '27', option: 'Animals' },
+    { value: '28', option: 'Vehicles' },
+    { value: '29', option: 'Entertainment: Comics' },
+    { value: '30', option: 'Science: Gadgets' },
+    { value: '31', option: 'Entertainment: Japanese Anime & Manga' },
+    { value: '32', option: 'Entertainment: Cartoon & Animations' },
+  ];
 
-    const triviaCategories = [
-      { value: 'any', option: 'Any Category' },
-      { value: '9', option: 'General Knowledge' },
-      { value: '10', option: 'Entertainment: Books' },
-      { value: '11', option: 'Entertainment: Film' },
-      { value: '12', option: 'Entertainment: Music' },
-      { value: '13', option: 'Entertainment: Musicals & Theatres' },
-      { value: '14', option: 'Entertainment: Television' },
-      { value: '15', option: 'Entertainment: Video Games' },
-      { value: '16', option: 'Entertainment: Board Games' },
-      { value: '17', option: 'Science & Nature' },
-      { value: '18', option: 'Science: Computers' },
-      { value: '19', option: 'Science: Mathematics' },
-      { value: '20', option: 'Mythology' },
-      { value: '21', option: 'Sports' },
-      { value: '22', option: 'Geography' },
-      { value: '23', option: 'History' },
-      { value: '24', option: 'Politics' },
-      { value: '25', option: 'Art' },
-      { value: '26', option: 'Celebrities' },
-      { value: '27', option: 'Animals' },
-      { value: '28', option: 'Vehicles' },
-      { value: '29', option: 'Entertainment: Comics' },
-      { value: '30', option: 'Science: Gadgets' },
-      { value: '31', option: 'Entertainment: Japanese Anime & Manga' },
-      { value: '32', option: 'Entertainment: Cartoon & Animations' },
-    ];
+  const triviaDifficulty = [
+    { value: 'any', option: 'Any difficulty' },
+    { value: 'easy', option: 'Easy' },
+    { value: 'medium', option: 'Medium' },
+    { value: 'hard', option: 'Hard' }
+  ];
 
-    const triviaDifficulty = [
-      { value: 'any', option: 'Any difficulty' },
-      { value: 'easy', option: 'Easy' },
-      { value: 'medium', option: 'Medium' },
-      { value: 'hard', option: 'Hard' }
-    ];
+  const triviaType = [
+    { value: 'any', option: 'Any' },
+    { value: 'multiple', option: 'Multiple Choice' },
+    { value: 'boolean', option: 'True / False ' }
+  ];
 
-    const triviaType = [
-      { value: 'any', option: 'Any' },
-      { value: 'multiple', option: 'Multiple Choice' },
-      { value: 'boolean', option: 'True / False ' }
-    ];
+  const categoryGroup = _createSelectGroup({ name: 'category', id: 'trivia_category' }, triviaCategories);
+  const difficultyGroup = _createSelectGroup({ name: 'difficulty', id: 'trivia_difficulty' }, triviaDifficulty);
+  const typeGroup = _createSelectGroup({ name: 'type', id: 'trivia_type' }, triviaType);
 
-    const categoryGroup = _createSelectGroup({ name: 'category', id: 'trivia_category' }, triviaCategories);
-    const difficultyGroup = _createSelectGroup({ name: 'difficulty', id: 'trivia_difficulty' }, triviaDifficulty);
-    const typeGroup = _createSelectGroup({ name: 'type', id: 'trivia_type' }, triviaType);
+  const submitBtn = _createElement('button', 'quiz-config__btn');
+  submitBtn.classList.add('js-send-request', 'u-mg-top-md');
+  submitBtn.type = 'submit';
+  submitBtn.textContent = 'Start';
 
-    const submitBtn = _createElement('button', 'quiz-config__btn');
-    submitBtn.classList.add('js-send-request', 'u-mg-top-md');
-    submitBtn.type = 'submit';
-    submitBtn.textContent = 'Start';
+  form.append(formHeading, amountGroup, categoryGroup, difficultyGroup, typeGroup, submitBtn);
 
-    form.append(formHeading, amountGroup, categoryGroup, difficultyGroup, typeGroup, submitBtn);
-
-    console.log('load quiz configurator');
-
-    return form;
-  }
 
   function _createSelectGroup({ name, id }, options) {
     const configGroup = _createElement('div', 'quiz-config__group');
@@ -146,7 +140,7 @@ const viewController = (function () {
   }
 
   function clearView() {
-    if (_main.firstElementChild) _main.remove(_main.firstElementChild);
+    while (_main.firstChild) _main.removeChild(_main.firstElementChild);
   }
 
   function showLoader() {
@@ -171,62 +165,111 @@ const viewController = (function () {
     return element;
   }
 
+  function buildQuestionCard(questionObj) {
+    const questionCard = _createElement('div', 'question-card');
+    const question = _createElement('h2', 'question-card__question');
+    question.textContent = questionObj.question;
+    const btn = _createElement('button', 'question-card__btn');
+    btn.classList.add('js-next-question');
+    btn.textContent = 'Next question'
+
+    const answers = _buildAnswers(questionObj);
+
+    questionCard.append(question, answers, btn);
+
+    return questionCard;
+  }
+
+  function _buildAnswers({ correct_answer, incorrect_answers }) {
+    const answersContainer = _createElement('ul', 'question-card__answers');
+    const answers = [];
+    const correctAnswer = _createElement('li', 'question-card__answer');
+    correctAnswer.textContent = correct_answer;
+    answers.push(correctAnswer);
+
+    incorrect_answers.forEach(answer => {
+      const elem = _createElement('li', 'question-card__answer');
+      elem.textContent = answer;
+
+      answers.push(elem);
+    })
+
+    // answers = [...shuffleAnswers(answers)];???
+
+    answers.forEach(answer => answersContainer.appendChild(answer));
+
+    return answersContainer;
+  }
+
+  function shuffleAnswers(answers) {
+    // shuffle answers so they don't always have the same order
+  }
+
   return {
     init() {
-      _main.append(createQuizConfig());
+      _main.append(form);
       console.log('View controller initialized');
     },
-    config: createQuizConfig,
     main: _main,
+    form: form,
     showLoader: showLoader,
     hideLoader: hideLoader,
     clearView: clearView,
+    buildQuestion: buildQuestionCard,
   }
 })();
 
 const app = (function (view, model) {
 
-  const _apiEndpoint = 'https://opentdb.com/api.php';
-  const _URL = new URL(_apiEndpoint);
 
   // Event listeners and stuff
   // Maybe take the form out of the quizConfig function
-  document.addEventListener('submit', function processFormData(e) {
+  view.form.addEventListener('submit', function passFormData(e) {
     e.preventDefault();
 
     view.showLoader();
 
     const data = new FormData(e.target);
+    const url = buildURL(data);
+
+    // fetch questions
+    fetchQuestions(url)
+  });
+
+  document.addEventListener('load-question', function loadQuestion(e) {
+    view.clearView();
+
+    // Build these functions --- think about the functionality
+    // view.buildQuestionCard(model.serveNextQuestion());
+
+    view.hideLoader();
+  })
+
+  function buildURL(data) {
+    const _apiEndpoint = 'https://opentdb.com/api.php';
+    const _URL = new URL(_apiEndpoint);
     for (let [key, value] of data) {
       if (value === 'any') continue;
       _URL.searchParams.set(key, value);
 
-      console.log(_URL);
-    };
+    }
+    console.log(_URL);
 
-    // fetch questions
-    fetchQuestions(_URL)
-  });
+    return _URL;
+  }
 
-  document.addEventListener('questions-ready', function readyToLoadQuestionsHTML(e) {
-    console.log(`Les go!!! ${e.detail.message}`);
-  })
-
-  function fetchQuestions(URL) {
+  function fetchQuestions(url) {
     const request = new XMLHttpRequest();
     request.onload = function handleResponse() {
       if (this.status === 200) {
         const res = JSON.parse(this.response);
-        model.saveQuestions(res.results)
-        this.dispatchEvent(new CustomEvent('questions-ready', {
-          detail: {
-            message: 'Dejan je car'
-          }
-        }));
+        model.saveQuestions(res.results);
+
+        view.main.dispatchEvent(new CustomEvent('load-question', { bubbles: true }));
       }
     }
 
-    request.open('GET', URL);
+    request.open('GET', url);
     request.send();
   }
 
@@ -238,7 +281,6 @@ const app = (function (view, model) {
     },
     model,
     view,
-    url: _URL,
   }
 })(viewController, modelController);
 
