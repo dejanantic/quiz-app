@@ -139,7 +139,7 @@ const viewController = (function () {
   const difficultyGroup = _createSelectGroup({ name: 'difficulty', id: 'trivia_difficulty' }, triviaDifficulty);
   const typeGroup = _createSelectGroup({ name: 'type', id: 'trivia_type' }, triviaType);
 
-  const submitBtn = _createElement('button', 'quiz-config__btn');
+  const submitBtn = _createElement('button', 'btn');
   submitBtn.classList.add('js-send-request', 'u-mg-top-md');
   submitBtn.type = 'submit';
   submitBtn.textContent = 'Start';
@@ -203,7 +203,7 @@ const viewController = (function () {
     const questionCard = _createElement('div', 'question-card');
     const question = _createElement('h2', 'question-card__question');
     question.textContent = questionObj.question;
-    const btn = _createElement('button', 'question-card__btn');
+    const btn = _createElement('button', 'btn');
     btn.classList.add('js-next-question');
     btn.textContent = 'Next question'
 
@@ -275,15 +275,20 @@ const viewController = (function () {
   function showQuizSummary(score, totalQuestions) {
     const quizSummary = _createElement('div', 'quiz-summary');
     const title = _createElement('h2', 'quiz-summary__title');
-    title.textContent = `You got ${score} of ${totalQuestions} questions!`;
-    const restartBtn = _createElement('button', 'quiz-summary__btn');
+    title.textContent = `You got ${score} out of ${totalQuestions} questions!`;
+
+    const btnContainer = _createElement('div', 'quiz-summary__buttons');
+    const restartBtn = _createElement('button', 'btn');
     restartBtn.textContent = 'Restart Quiz';
-    const answersBtn = _createElement('button', 'quiz-summary__btn');
+    const answersBtn = _createElement('button', 'btn');
+    answersBtn.classList.add('btn--light');
     answersBtn.textContent = 'My answers';
+
+    btnContainer.append(restartBtn, answersBtn);
 
     console.log(`You got ${score} out of ${totalQuestions} questions`);
 
-    quizSummary.append(title, restartBtn, answersBtn);
+    quizSummary.append(title, btnContainer);
     return quizSummary;
   }
 
