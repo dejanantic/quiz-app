@@ -2,22 +2,35 @@
 const modelController = (function () {
 
   let _questions;
-  let _questionIndex = 0;
+  let _currentQuestionIndex = 0;
+  let _score = 0;
 
   function saveQuestions(responseResults) {
     _questions = [...responseResults];
   }
 
   function serveNextQuestion() {
-    if (_questionIndex == _questions.length) return null;
+    if (_currentQuestionIndex == _questions.length) return null;
 
-    const nextQuestion = _questions[_questionIndex++];
+    const nextQuestion = _questions[_currentQuestionIndex++];
 
     return nextQuestion;
   }
 
   function resetQuestionIndex() {
-    _questionIndex = 0;
+    _currentQuestionIndex = 0;
+  }
+
+  function getCorrectAnswer() {
+    return _questions[(_currentQuestionIndex - 1)].correct_answer;
+  }
+
+  function incrementScore() {
+    return ++_score;
+  }
+
+  function getScore() {
+    return _score;
   }
 
   return {
@@ -30,6 +43,9 @@ const modelController = (function () {
     },
     serveNextQuestion: serveNextQuestion,
     resetQuestionIndex: resetQuestionIndex,
+    getCorrectAnswer: getCorrectAnswer,
+    incrementScore: incrementScore,
+    getScore: getScore,
   }
 })();
 
@@ -211,12 +227,50 @@ const viewController = (function () {
       answersContainer.appendChild(elem);
     })
 
-    // answers = [...shuffleAnswers(answers)];???
+    // answers = [..._shuffleAnswers(answers)];???
     return answersContainer;
   }
 
-  function shuffleAnswers(answers) {
+  function _shuffleAnswers(answers) {
     // shuffle answers so they don't always have the same order
+  }
+
+  function updateScore(newScore) {
+    // The span element that shows the score value
+    _span.textContent = newScore;
+  }
+
+  function applyCorrectAnswerStyleTo(answer) {
+    answer.classList.add('correct');
+
+    _flagQuestionCard();
+  }
+
+  function applyIncorrectAnswerStyleTo(answer) {
+    answer.classList.add('incorrect');
+
+    _flagQuestionCard();
+  }
+
+  function showCorrectAnswer(correctAnswerText) {
+    const answers = Array.from(document.querySelectorAll('.question-card__answer'));
+
+    let correctAnswer = answers.filter(answer => answer.textContent === correctAnswerText);
+    correctAnswer = correctAnswer[0];
+
+    applyCorrectAnswerStyleTo(correctAnswer);
+  }
+
+  // Mark question card as answered so that further clicks are not possible
+  function _flagQuestionCard() {
+    const questionCard = document.querySelector('.question-card');
+
+    if (!questionCard.classList.contains('js-answered')) questionCard.classList.add('js-answered');
+  }
+
+  function showNextQuestionButton() {
+    const btn = document.querySelector('.js-next-question');
+    btn.style.visibility = 'visible';
   }
 
   return {
@@ -230,6 +284,11 @@ const viewController = (function () {
     hideLoader: hideLoader,
     clearView: clearView,
     buildQuestion: buildQuestionCard,
+    updateScore: updateScore,
+    applyCorrectAnswerStyleTo: applyCorrectAnswerStyleTo,
+    applyIncorrectAnswerStyleTo: applyIncorrectAnswerStyleTo,
+    showNextQuestionButton: showNextQuestionButton,
+    showCorrectAnswer: showCorrectAnswer,
   }
 })();
 
@@ -268,6 +327,33 @@ const app = (function (view, model) {
     const question = view.buildQuestion(model.serveNextQuestion());
 
     view.main.appendChild(question);
+  })
+
+  // Check if the answer is correct and show the button for next question
+  view.main.addEventListener('click', function checkAnswer(e) {
+    if (e.target.tagName !== 'LI') return;
+    // If the question card was answered, prevent further clicks
+    if (e.target.closest('.question-card').classList.contains('js-answered')) return;
+
+    const clickedEl = e.target;
+    const userAnswer = clickedEl.textContent;
+    const correctAnswer = model.getCorrectAnswer();
+
+    if (userAnswer === correctAnswer) {
+      const newScore = model.incrementScore();
+      view.updateScore(newScore);
+
+      view.applyCorrectAnswerStyleTo(clickedEl);
+      view.showNextQuestionButton();
+      console.log('you answered correctly');
+    } else {
+
+      view.applyIncorrectAnswerStyleTo(clickedEl);
+      view.showCorrectAnswer(correctAnswer);
+      view.showNextQuestionButton();
+      console.log('you answered incorrectly');
+    }
+
   })
 
   function buildURL(data) {
