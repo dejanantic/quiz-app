@@ -2,9 +2,22 @@
 const modelController = (function () {
 
   let _questions;
+  let _questionIndex = 0;
 
   function saveQuestions(responseResults) {
     _questions = [...responseResults];
+  }
+
+  function serveNextQuestion() {
+    if (_questionIndex == _questions.length) return null;
+
+    const nextQuestion = _questions[_questionIndex++];
+
+    return nextQuestion;
+  }
+
+  function resetQuestionIndex() {
+    _questionIndex = 0;
   }
 
   return {
@@ -14,7 +27,9 @@ const modelController = (function () {
     saveQuestions: saveQuestions,
     get questions() {
       return _questions;
-    }
+    },
+    serveNextQuestion: serveNextQuestion,
+    resetQuestionIndex: resetQuestionIndex,
   }
 })();
 
@@ -140,7 +155,7 @@ const viewController = (function () {
   }
 
   function clearView() {
-    while (_main.firstChild) _main.removeChild(_main.firstElementChild);
+    while (_main.firstChild) _main.removeChild(_main.firstChild);
   }
 
   function showLoader() {
@@ -166,6 +181,10 @@ const viewController = (function () {
   }
 
   function buildQuestionCard(questionObj) {
+    // TK insert a check if the question object is undefined
+    // if so, return immediately some value (undefined or null)
+    // if (questionObj === null) return 'Quiz finished';
+
     const questionCard = _createElement('div', 'question-card');
     const question = _createElement('h2', 'question-card__question');
     question.textContent = questionObj.question;
@@ -182,22 +201,17 @@ const viewController = (function () {
 
   function _buildAnswers({ correct_answer, incorrect_answers }) {
     const answersContainer = _createElement('ul', 'question-card__answers');
-    const answers = [];
+    const answers = [correct_answer, ...incorrect_answers];
     const correctAnswer = _createElement('li', 'question-card__answer');
-    correctAnswer.textContent = correct_answer;
-    answers.push(correctAnswer);
 
-    incorrect_answers.forEach(answer => {
+    answers.forEach(answer => {
       const elem = _createElement('li', 'question-card__answer');
       elem.textContent = answer;
 
-      answers.push(elem);
+      answersContainer.appendChild(elem);
     })
 
     // answers = [...shuffleAnswers(answers)];???
-
-    answers.forEach(answer => answersContainer.appendChild(answer));
-
     return answersContainer;
   }
 
@@ -236,13 +250,24 @@ const app = (function (view, model) {
     fetchQuestions(url)
   });
 
-  document.addEventListener('load-question', function loadQuestion(e) {
+  document.addEventListener('load-question', function loadFirstQuestion(e) {
     view.clearView();
 
-    // Build these functions --- think about the functionality
-    // view.buildQuestionCard(model.serveNextQuestion());
+    const question = view.buildQuestion(model.serveNextQuestion());
+
+    view.main.appendChild(question);
 
     view.hideLoader();
+  })
+
+  document.addEventListener('click', function loadNextQuestion(e) {
+    if (!e.target.classList.contains('js-next-question')) return;
+
+    view.clearView();
+
+    const question = view.buildQuestion(model.serveNextQuestion());
+
+    view.main.appendChild(question);
   })
 
   function buildURL(data) {
