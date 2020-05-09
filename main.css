@@ -45,7 +45,6 @@ input {
       font: inherit; }
 
 .question-card {
-  padding-top: 2rem;
   font-size: 1.6rem;
   text-align: center; }
   .question-card__question {
@@ -136,7 +135,9 @@ input {
   display: flex;
   align-items: center;
   width: 100%;
-  padding: 0 3rem; }
+  padding: 1rem 3rem;
+  background-color: var(--color-primary);
+  color: var(--color-white); }
   .header__score {
     margin-left: auto; }
 
