@@ -47,7 +47,7 @@ const viewController = (function () {
   const _par = _createElement('p');
   const _span = _createElement('span', 'js-score');
   _span.textContent = 0;
-  _par.textContent = `Your score: `;
+  _par.textContent = `Score: `;
 
   _par.append(_span);
   _score.append(_par);

@@ -25,10 +25,13 @@ input {
   --color-primary-light: hsl(206, 100%, 68%);
   --color-primary-dark: hsl(206, 100%, 31%);
   --color-red: hsl(0, 100%, 42%);
+  --color-red-light: hsl(0, 75%, 61%);
   --color-green: hsl(145, 100%, 39%);
+  --color-green-light: hsl(145, 75%, 61%);
   --color-white: hsl(0, 0%, 100%);
   --color-background: hsl(0, 0%, 100%);
-  --color-text-primary: hsl(0, 0%, 24%); }
+  --color-text-primary: hsl(0, 0%, 24%);
+  --color-text-light: hsl(0, 0%, 80%); }
 
 .quiz-config {
   background: var(--color-white);
@@ -50,6 +53,50 @@ input {
     letter-spacing: 1px;
     padding: 1em 4em;
     border-radius: 4px; }
+
+.question-card {
+  padding-top: 2rem;
+  font-size: 1.6rem;
+  text-align: center; }
+  .question-card__question {
+    margin-bottom: 2rem; }
+  .question-card__answers {
+    list-style: none;
+    margin: 0;
+    padding: 0; }
+  .question-card__answer {
+    text-align: center;
+    text-transform: uppercase;
+    border: 1px solid var(--color-text-light);
+    border-radius: 2rem;
+    margin-bottom: 1rem;
+    padding: 1.25rem 0 1.25rem;
+    cursor: pointer; }
+    .question-card__answer.correct {
+      background-color: var(--color-green-light);
+      border-color: var(--color-green);
+      color: var(--color-white);
+      font-weight: 700; }
+    .question-card__answer.incorrect {
+      background-color: var(--color-red-light);
+      border-color: var(--color-red);
+      color: var(--color-white);
+      font-weight: 700; }
+  .question-card__btn {
+    display: block;
+    visibility: hidden;
+    margin: 0 auto;
+    text-transform: uppercase;
+    border: none;
+    background-color: var(--color-primary);
+    color: var(--color-white);
+    font-weight: 400;
+    font-family: inherit;
+    letter-spacing: 1px;
+    padding: 1em 4em;
+    border-radius: 2rem; }
+  .question-card.js-answered .question-card__btn {
+    visibility: visible; }
 
 .loader {
   background-color: var(--color-white);
@@ -87,8 +134,7 @@ input {
     margin-left: auto; }
 
 .main {
-  padding: 2rem;
-  height: 50%; }
+  padding: 2rem; }
 
 .loader {
   position: absolute;
