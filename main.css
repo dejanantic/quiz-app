@@ -95,8 +95,9 @@ input {
     letter-spacing: 1px;
     padding: 1em 4em;
     border-radius: 2rem; }
-  .question-card.js-answered .question-card__btn {
-    visibility: visible; }
+
+.quiz-summary__title {
+  text-align: center; }
 
 .loader {
   background-color: var(--color-white);

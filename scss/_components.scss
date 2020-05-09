@@ -83,6 +83,12 @@
   }
 }
 
+.quiz-summary {
+  &__title {
+    text-align: center;
+  }
+}
+
 .loader {
   background-color: var(--color-white);
   visibility: hidden;

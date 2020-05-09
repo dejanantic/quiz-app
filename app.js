@@ -10,11 +10,13 @@ const modelController = (function () {
   }
 
   function serveNextQuestion() {
-    if (_currentQuestionIndex == _questions.length) return null;
-
     const nextQuestion = _questions[_currentQuestionIndex++];
 
     return nextQuestion;
+  }
+
+  function isQuizOver() {
+    return _currentQuestionIndex == _questions.length ? true : false;
   }
 
   function resetQuestionIndex() {
@@ -46,6 +48,7 @@ const modelController = (function () {
     getCorrectAnswer: getCorrectAnswer,
     incrementScore: incrementScore,
     getScore: getScore,
+    isQuizOver: isQuizOver,
   }
 })();
 
@@ -197,10 +200,6 @@ const viewController = (function () {
   }
 
   function buildQuestionCard(questionObj) {
-    // TK insert a check if the question object is undefined
-    // if so, return immediately some value (undefined or null)
-    // if (questionObj === null) return 'Quiz finished';
-
     const questionCard = _createElement('div', 'question-card');
     const question = _createElement('h2', 'question-card__question');
     question.textContent = questionObj.question;
@@ -273,8 +272,24 @@ const viewController = (function () {
     btn.style.visibility = 'visible';
   }
 
+  function showQuizSummary(score, totalQuestions) {
+    const quizSummary = _createElement('div', 'quiz-summary');
+    const title = _createElement('h2', 'quiz-summary__title');
+    title.textContent = `You got ${score} of ${totalQuestions} questions!`;
+    const restartBtn = _createElement('button', 'quiz-summary__btn');
+    restartBtn.textContent = 'Restart Quiz';
+    const answersBtn = _createElement('button', 'quiz-summary__btn');
+    answersBtn.textContent = 'My answers';
+
+    console.log(`You got ${score} out of ${totalQuestions} questions`);
+
+    quizSummary.append(title, restartBtn, answersBtn);
+    return quizSummary;
+  }
+
   return {
     init() {
+      clearView();
       _main.append(form);
       console.log('View controller initialized');
     },
@@ -283,12 +298,13 @@ const viewController = (function () {
     showLoader: showLoader,
     hideLoader: hideLoader,
     clearView: clearView,
-    buildQuestion: buildQuestionCard,
+    buildQuestionCard: buildQuestionCard,
     updateScore: updateScore,
     applyCorrectAnswerStyleTo: applyCorrectAnswerStyleTo,
     applyIncorrectAnswerStyleTo: applyIncorrectAnswerStyleTo,
     showNextQuestionButton: showNextQuestionButton,
     showCorrectAnswer: showCorrectAnswer,
+    showQuizSummary: showQuizSummary,
   }
 })();
 
@@ -312,9 +328,11 @@ const app = (function (view, model) {
   document.addEventListener('load-question', function loadFirstQuestion(e) {
     view.clearView();
 
-    const question = view.buildQuestion(model.serveNextQuestion());
+    const question = model.serveNextQuestion();
 
-    view.main.appendChild(question);
+    const questionCard = view.buildQuestionCard(question);
+
+    view.main.appendChild(questionCard);
 
     view.hideLoader();
   })
@@ -324,9 +342,14 @@ const app = (function (view, model) {
 
     view.clearView();
 
-    const question = view.buildQuestion(model.serveNextQuestion());
-
-    view.main.appendChild(question);
+    if (model.isQuizOver()) {
+      const quizSummary = view.showQuizSummary(model.getScore(), model.questions.length);
+      view.main.appendChild(quizSummary);
+    } else {
+      const question = model.serveNextQuestion();
+      const questionCard = view.buildQuestionCard(question);
+      view.main.appendChild(questionCard);
+    }
   })
 
   // Check if the answer is correct and show the button for next question
