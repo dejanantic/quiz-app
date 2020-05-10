@@ -212,7 +212,7 @@ const viewController = (function () {
 
   function _buildAnswers({ correct_answer, incorrect_answers }) {
     const answersContainer = _createElement('ul', 'question-card__answers');
-    const answers = [correct_answer, ...incorrect_answers];
+    const answers = _shuffleAnswers([correct_answer, ...incorrect_answers]);
     const correctAnswer = _createElement('li', 'question-card__answer');
 
     answers.forEach(answer => {
@@ -222,12 +222,19 @@ const viewController = (function () {
       answersContainer.appendChild(elem);
     })
 
-    // answers = [..._shuffleAnswers(answers)];???
     return answersContainer;
   }
 
   function _shuffleAnswers(answers) {
-    // shuffle answers so they don't always have the same order
+    let arr = [...answers];
+    let result = [];
+
+    while (arr.length > 0) {
+      let r = Math.floor(Math.random() * arr.length);
+      let answer = arr.splice(r, 1);
+      result.push(answer);
+    }
+    return result;
   }
 
   function applyCorrectAnswerStyleTo(answer) {
