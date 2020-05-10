@@ -1,7 +1,7 @@
 'use strict'
 const modelController = (function () {
 
-  let _questions;
+  let _questions = [];
   let _currentQuestionIndex = 0;
   let _score = 0;
 
@@ -19,8 +19,10 @@ const modelController = (function () {
     return _currentQuestionIndex == _questions.length ? true : false;
   }
 
-  function resetQuestionIndex() {
+  function resetQuiz() {
     _currentQuestionIndex = 0;
+    _score = 0;
+    _questions = [];
   }
 
   function getCorrectAnswer() {
@@ -44,7 +46,7 @@ const modelController = (function () {
       return _questions;
     },
     serveNextQuestion: serveNextQuestion,
-    resetQuestionIndex: resetQuestionIndex,
+    resetModel: resetQuiz,
     getCorrectAnswer: getCorrectAnswer,
     incrementScore: incrementScore,
     getScore: getScore,
@@ -262,13 +264,13 @@ const viewController = (function () {
 
   // Mark question card as answered so that further clicks are not possible
   function _flagQuestionCard() {
-    const questionCard = document.querySelector('.question-card');
+    const questionCard = _getElement('.question-card');
 
     if (!questionCard.classList.contains('js-answered')) questionCard.classList.add('js-answered');
   }
 
   function showNextQuestionButton() {
-    const btn = document.querySelector('.js-next-question');
+    const btn = _getElement('.js-next-question');
     btn.style.visibility = 'visible';
   }
 
@@ -278,17 +280,23 @@ const viewController = (function () {
     title.textContent = `You got ${score} out of ${totalQuestions} questions!`;
 
     const btnContainer = _createElement('div', 'quiz-summary__buttons');
-    const restartBtn = _createElement('button', 'btn');
-    restartBtn.textContent = 'Restart Quiz';
+
     const answersBtn = _createElement('button', 'btn');
     answersBtn.classList.add('btn--light');
     answersBtn.textContent = 'My answers';
+
+    const restartBtn = _createElement('button', 'btn');
+    restartBtn.textContent = 'Restart Quiz';
+    restartBtn.addEventListener('click', function resetQuiz(e) {
+      window.location.reload();
+    }, { once: true });
 
     btnContainer.append(restartBtn, answersBtn);
 
     console.log(`You got ${score} out of ${totalQuestions} questions`);
 
     quizSummary.append(title, btnContainer);
+
     return quizSummary;
   }
 
@@ -363,20 +371,20 @@ const app = (function (view, model) {
     // If the question card was answered, prevent further clicks
     if (e.target.closest('.question-card').classList.contains('js-answered')) return;
 
-    const clickedEl = e.target;
-    const userAnswer = clickedEl.textContent;
+    const clickedLi = e.target;
+    const userAnswer = clickedLi.textContent;
     const correctAnswer = model.getCorrectAnswer();
 
     if (userAnswer === correctAnswer) {
       const newScore = model.incrementScore();
       view.updateScore(newScore);
 
-      view.applyCorrectAnswerStyleTo(clickedEl);
+      view.applyCorrectAnswerStyleTo(clickedLi);
       view.showNextQuestionButton();
       console.log('you answered correctly');
     } else {
 
-      view.applyIncorrectAnswerStyleTo(clickedEl);
+      view.applyIncorrectAnswerStyleTo(clickedLi);
       view.showCorrectAnswer(correctAnswer);
       view.showNextQuestionButton();
       console.log('you answered incorrectly');

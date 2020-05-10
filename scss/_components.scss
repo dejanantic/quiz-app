@@ -5,9 +5,10 @@
   &__group {
     margin-top: 2rem;
 
-    > :not(label) {
+    & > :not(label) {
       display: block;
       width: 50%;
+      background-color: var(--color-white);
     }
 
     select {
