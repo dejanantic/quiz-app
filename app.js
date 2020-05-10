@@ -197,7 +197,7 @@ const viewController = (function () {
   function buildQuestionCard(questionObj) {
     const questionCard = _createElement('div', 'question-card');
     const question = _createElement('h2', 'question-card__question');
-    question.textContent = questionObj.question;
+    question.innerHTML = questionObj.question;
     const btn = _createElement('button', 'btn');
     btn.classList.add('js-next-question');
     btn.classList.add('u-mg-top-md');
@@ -217,7 +217,7 @@ const viewController = (function () {
 
     answers.forEach(answer => {
       const elem = _createElement('li', 'question-card__answer');
-      elem.textContent = answer;
+      elem.innerHTML = answer;
 
       answersContainer.appendChild(elem);
     })

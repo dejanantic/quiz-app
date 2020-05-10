@@ -40,7 +40,7 @@ input {
     margin-top: 2rem; }
     .quiz-config__group > :not(label) {
       display: block;
-      width: 50%;
+      width: 90%;
       background-color: var(--color-white); }
     .quiz-config__group select {
       font: inherit; }
