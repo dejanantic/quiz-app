@@ -64,15 +64,8 @@ const viewController = (function () {
   const _header = _createElement('header', 'header');
   const _logo = _createElement('h1', 'logo');
   _logo.textContent = 'Trivia Quiz';
-  const _score = _createElement('div', 'header__score');
-  const _par = _createElement('p');
-  const _span = _createElement('span', 'js-score');
-  _span.textContent = 0;
-  _par.textContent = `Score: `;
 
-  _par.append(_span);
-  _score.append(_par);
-  _header.append(_logo, _score);
+  _header.appendChild(_logo);
   _app.append(_header, _main, _loader);
 
 
@@ -207,6 +200,7 @@ const viewController = (function () {
     question.textContent = questionObj.question;
     const btn = _createElement('button', 'btn');
     btn.classList.add('js-next-question');
+    btn.classList.add('u-mg-top-md');
     btn.textContent = 'Next question'
 
     const answers = _buildAnswers(questionObj);
@@ -234,11 +228,6 @@ const viewController = (function () {
 
   function _shuffleAnswers(answers) {
     // shuffle answers so they don't always have the same order
-  }
-
-  function updateScore(newScore) {
-    // The span element that shows the score value
-    _span.textContent = newScore;
   }
 
   function applyCorrectAnswerStyleTo(answer) {
@@ -312,7 +301,6 @@ const viewController = (function () {
     hideLoader: hideLoader,
     clearView: clearView,
     buildQuestionCard: buildQuestionCard,
-    updateScore: updateScore,
     applyCorrectAnswerStyleTo: applyCorrectAnswerStyleTo,
     applyIncorrectAnswerStyleTo: applyIncorrectAnswerStyleTo,
     showNextQuestionButton: showNextQuestionButton,
@@ -376,8 +364,7 @@ const app = (function (view, model) {
     const correctAnswer = model.getCorrectAnswer();
 
     if (userAnswer === correctAnswer) {
-      const newScore = model.incrementScore();
-      view.updateScore(newScore);
+      model.incrementScore();
 
       view.applyCorrectAnswerStyleTo(clickedLi);
       view.showNextQuestionButton();
