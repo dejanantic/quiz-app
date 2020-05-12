@@ -35,7 +35,7 @@
     text-align: center;
     text-transform: uppercase;
     border: 1px solid var(--color-text-light);
-    border-radius: 2rem;
+    border-radius: 4px;
     margin-bottom: 1rem;
     padding: 1.25rem 0 1.25rem;
     cursor: pointer;
@@ -43,14 +43,14 @@
     &.correct {
       background-color: var(--color-green-light);
       border-color: var(--color-green);
-      color: var(--color-white);
+      color: var(--color-green);
       font-weight: 700;
     }
 
     &.incorrect {
       background-color: var(--color-red-light);
       border-color: var(--color-red);
-      color: var(--color-white);
+      color: var(--color-red);
       font-weight: 700;
     }
   }

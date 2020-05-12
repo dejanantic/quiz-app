@@ -25,9 +25,9 @@ input {
   --color-primary-light: hsl(206, 100%, 68%);
   --color-primary-dark: hsl(206, 100%, 31%);
   --color-red: hsl(0, 100%, 42%);
-  --color-red-light: hsl(0, 75%, 61%);
+  --color-red-light: hsla(0, 75%, 61%, 0.15);
   --color-green: hsl(145, 100%, 39%);
-  --color-green-light: hsl(145, 75%, 61%);
+  --color-green-light: hsla(145, 75%, 61%, 0.15);
   --color-white: hsl(0, 0%, 100%);
   --color-background: hsl(0, 0%, 100%);
   --color-text-primary: hsl(0, 0%, 24%);
@@ -58,19 +58,19 @@ input {
     text-align: center;
     text-transform: uppercase;
     border: 1px solid var(--color-text-light);
-    border-radius: 2rem;
+    border-radius: 4px;
     margin-bottom: 1rem;
     padding: 1.25rem 0 1.25rem;
     cursor: pointer; }
     .question-card__answer.correct {
       background-color: var(--color-green-light);
       border-color: var(--color-green);
-      color: var(--color-white);
+      color: var(--color-green);
       font-weight: 700; }
     .question-card__answer.incorrect {
       background-color: var(--color-red-light);
       border-color: var(--color-red);
-      color: var(--color-white);
+      color: var(--color-red);
       font-weight: 700; }
   .question-card .btn {
     display: block;
