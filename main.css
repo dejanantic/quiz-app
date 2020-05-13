@@ -63,6 +63,12 @@ input {
 .question-card {
   font-size: 1.6rem;
   text-align: center; }
+  .question-card__question-details {
+    font-size: 1.6rem;
+    font-weight: 100;
+    display: flex; }
+  .question-card__category {
+    margin-right: auto; }
   .question-card__question {
     margin-bottom: 2rem; }
   .question-card__answers {

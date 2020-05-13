@@ -38,6 +38,16 @@
   font-size: 1.6rem;
   text-align: center;
 
+  &__question-details {
+    font-size: 1.6rem;
+    font-weight: 100;
+    display: flex;
+  }
+
+  &__category {
+    margin-right: auto;
+  }
+
   &__question {
     margin-bottom: 2rem;
   }

@@ -206,6 +206,14 @@ const viewController = (function () {
 
   function buildQuestionCard(questionObj) {
     const questionCard = _createElement('div', 'question-card');
+
+    const questionDetails = _createElement('div', 'question-card__question-details');
+    const questionCategory = _createElement('div', 'question-card__category');
+    questionCategory.textContent = questionObj.category;
+    const questionDifficulty = _createElement('div', 'question-card__difficulty');
+    questionDifficulty.textContent = questionObj.difficulty;
+    questionDetails.append(questionCategory, questionDifficulty);
+
     const question = _createElement('h2', 'question-card__question');
     question.innerHTML = questionObj.question;
     const btn = _createElement('button', 'btn');
@@ -215,7 +223,7 @@ const viewController = (function () {
 
     const answers = _buildAnswers(questionObj);
 
-    questionCard.append(question, answers, btn);
+    questionCard.append(questionDetails, question, answers, btn);
 
     return questionCard;
   }
