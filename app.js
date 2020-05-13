@@ -284,6 +284,11 @@ const viewController = (function () {
     _progress.style.width = `${Math.floor(handler())}%`;
   }
 
+  function updateNextButtonText() {
+    const btn = _getElement('.js-next-question');
+    btn.textContent = 'Finish Quiz';
+  }
+
   function showQuizSummary(score, totalQuestions) {
     const quizSummary = _createElement('div', 'quiz-summary');
     const title = _createElement('h2', 'quiz-summary__title');
@@ -328,6 +333,7 @@ const viewController = (function () {
     showCorrectAnswer: showCorrectAnswer,
     showQuizSummary: showQuizSummary,
     updateProgress: updateProgress,
+    updateNextButtonText: updateNextButtonText,
   }
 })();
 
@@ -374,6 +380,7 @@ const app = (function (view, model) {
       const question = model.serveNextQuestion();
       const questionCard = view.buildQuestionCard(question);
       view.main.appendChild(questionCard);
+      if (model.isQuizOver()) view.updateNextButtonText();
     }
   })
 
