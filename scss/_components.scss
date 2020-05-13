@@ -11,8 +11,7 @@
 }
 
 .quiz-config {
-  background: var(--color-white);
-  padding: 1.5em;
+  padding: 0 1em;
 
   &__group {
     margin-top: 2rem;
@@ -20,12 +19,18 @@
     & > :not(label) {
       display: block;
       width: 90%;
+      padding: 1.25rem;
+      border-radius: 4px;
       background-color: var(--color-white);
+      font-size: 1.6rem;
+      font-family: inherit;
+      border: 1px solid var(--color-border);
     }
+  }
 
-    select {
-      font: inherit;
-    }
+  &__label {
+    display: inline-block;
+    margin-bottom: 0.35rem;
   }
 }
 
@@ -86,7 +91,7 @@
     display: flex;
     flex-flow: column;
 
-    & > * {
+    & > .btn {
       margin-top: 2rem;
     }
   }
@@ -125,6 +130,8 @@
 }
 
 .btn {
+  display: block;
+  margin: 0 auto;
   text-transform: uppercase;
   border: 2px solid transparent;
   background-color: var(--color-primary);
