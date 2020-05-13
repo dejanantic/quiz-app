@@ -37,6 +37,10 @@ const modelController = (function () {
     return _score;
   }
 
+  function calculateQuizProgress() {
+    return (_currentQuestionIndex * 100) / _questions.length;
+  }
+
   return {
     init: () => {
       console.log('Model controller initialized');
@@ -51,6 +55,7 @@ const modelController = (function () {
     incrementScore: incrementScore,
     getScore: getScore,
     isQuizOver: isQuizOver,
+    progress: calculateQuizProgress,
   }
 })();
 
@@ -60,13 +65,18 @@ const viewController = (function () {
   const _main = _createElement('main', 'main');
   const _loader = _createElement('div', 'loader');
 
+  // Progress bar
+  const _progressBar = _createElement('div', 'progress-bar');
+  const _progress = _createElement('div', 'progress-bar__progress')
+  _progressBar.appendChild(_progress);
+
   // Header
   const _header = _createElement('header', 'header');
   const _logo = _createElement('h1', 'logo');
   _logo.textContent = 'Trivia Quiz';
 
   _header.appendChild(_logo);
-  _app.append(_header, _main, _loader);
+  _app.append(_header, _progressBar, _main, _loader);
 
 
   // Create Quiz Configurator
@@ -270,6 +280,10 @@ const viewController = (function () {
     btn.style.visibility = 'visible';
   }
 
+  function updateProgress(handler) {
+    _progress.style.width = `${Math.floor(handler())}%`;
+  }
+
   function showQuizSummary(score, totalQuestions) {
     const quizSummary = _createElement('div', 'quiz-summary');
     const title = _createElement('h2', 'quiz-summary__title');
@@ -313,6 +327,7 @@ const viewController = (function () {
     showNextQuestionButton: showNextQuestionButton,
     showCorrectAnswer: showCorrectAnswer,
     showQuizSummary: showQuizSummary,
+    updateProgress: updateProgress,
   }
 })();
 
@@ -353,7 +368,9 @@ const app = (function (view, model) {
     if (model.isQuizOver()) {
       const quizSummary = view.showQuizSummary(model.getScore(), model.questions.length);
       view.main.appendChild(quizSummary);
+      view.updateProgress(model.progress);
     } else {
+      view.updateProgress(model.progress);
       const question = model.serveNextQuestion();
       const questionCard = view.buildQuestionCard(question);
       view.main.appendChild(questionCard);
@@ -426,18 +443,3 @@ const app = (function (view, model) {
 })(viewController, modelController);
 
 app.init();
-
-// FETCHING QUIZ DATA
-// 1. display loader
-// 2. fetch quiz questions
-// 3. generate first question
-// 4. hide loader
-
-// USER ANSWERS THE QUETSION
-// 1. user selects an answer
-// 2. prevent submiting more than 1 answer
-// 2. answer validation
-// 3. update score
-// a. show loader after 500ms
-// 4. show next question
-// b. hide loader
