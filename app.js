@@ -6,7 +6,35 @@ const modelController = (function () {
   let _score = 0;
 
   function saveQuestions(responseResults) {
-    _questions = [...responseResults];
+    _questions = _prepareQuestions([...responseResults]);
+  }
+
+  function _prepareQuestions(questionsArray) {
+    return questionsArray.map((questionObj, index) => {
+      const question = {
+        index: index,
+        category: questionObj.category,
+        difficulty: questionObj.difficulty,
+        text: questionObj.question,
+        correctAnswer: questionObj.correct_answer,
+        answers: _shuffleAnswers([questionObj.correct_answer, ...questionObj.incorrect_answers]),
+        userAnswer: null,
+      }
+
+      return question;
+    });
+  }
+
+  function _shuffleAnswers(answers) {
+    let arr = [...answers];
+    let result = [];
+
+    while (arr.length > 0) {
+      let r = Math.floor(Math.random() * arr.length);
+      let answer = arr.splice(r, 1)[0];
+      result.push(answer);
+    }
+    return result;
   }
 
   function serveNextQuestion() {
@@ -25,8 +53,9 @@ const modelController = (function () {
     _questions = [];
   }
 
-  function getCorrectAnswer() {
-    return _questions[(_currentQuestionIndex - 1)].correct_answer;
+  function getCorrectAnswerIndex() {
+    const currentQuestion = _questions[_currentQuestionIndex - 1];
+    return currentQuestion.answers.indexOf(currentQuestion.correctAnswer);
   }
 
   function incrementScore() {
@@ -41,6 +70,14 @@ const modelController = (function () {
     return (_currentQuestionIndex * 100) / _questions.length;
   }
 
+  function saveUserAnswer(userAnswer) {
+    _questions[_currentQuestionIndex - 1].userAnswer = userAnswer;
+  }
+
+  function isAnswerCorrect(userAnswer) {
+    return userAnswer == getCorrectAnswerIndex() ? true : false;
+  }
+
   return {
     init: () => {
       console.log('Model controller initialized');
@@ -51,11 +88,13 @@ const modelController = (function () {
     },
     serveNextQuestion: serveNextQuestion,
     resetModel: resetQuiz,
-    getCorrectAnswer: getCorrectAnswer,
+    getCorrectAnswerIndex: getCorrectAnswerIndex,
     incrementScore: incrementScore,
     getScore: getScore,
     isQuizOver: isQuizOver,
     progress: calculateQuizProgress,
+    saveUserAnswer: saveUserAnswer,
+    isAnswerCorrect: isAnswerCorrect,
   }
 })();
 
@@ -215,44 +254,34 @@ const viewController = (function () {
     questionDetails.append(questionCategory, questionDifficulty);
 
     const question = _createElement('h2', 'question-card__question');
-    question.innerHTML = questionObj.question;
+    question.innerHTML = questionObj.text;
     const btn = _createElement('button', 'btn');
     btn.classList.add('js-next-question');
     btn.classList.add('u-mg-top-md');
     btn.textContent = 'Next question'
 
-    const answers = _buildAnswers(questionObj);
+    const answers = _buildAnswers(questionObj.answers);
 
     questionCard.append(questionDetails, question, answers, btn);
 
     return questionCard;
   }
 
-  function _buildAnswers({ correct_answer, incorrect_answers }) {
+  function _buildAnswers(answersArr) {
     const answersContainer = _createElement('ul', 'question-card__answers');
-    const answers = _shuffleAnswers([correct_answer, ...incorrect_answers]);
-    const correctAnswer = _createElement('li', 'question-card__answer');
+    const answers = [...answersArr];
 
-    answers.forEach(answer => {
+    const HTMLanswers = answers.map((answer, index) => {
       const elem = _createElement('li', 'question-card__answer');
+      elem.dataset.answerId = index;
       elem.innerHTML = answer;
 
-      answersContainer.appendChild(elem);
+      return elem;
     })
 
+    answersContainer.append(...HTMLanswers);
+
     return answersContainer;
-  }
-
-  function _shuffleAnswers(answers) {
-    let arr = [...answers];
-    let result = [];
-
-    while (arr.length > 0) {
-      let r = Math.floor(Math.random() * arr.length);
-      let answer = arr.splice(r, 1);
-      result.push(answer);
-    }
-    return result;
   }
 
   function applyCorrectAnswerStyleTo(answer) {
@@ -267,10 +296,10 @@ const viewController = (function () {
     _flagQuestionCard();
   }
 
-  function showCorrectAnswer(correctAnswerText) {
+  function showCorrectAnswer(correctAnswerIndex) {
     const answers = Array.from(document.querySelectorAll('.question-card__answer'));
 
-    let correctAnswer = answers.filter(answer => answer.textContent === correctAnswerText);
+    let correctAnswer = answers.filter(answer => answer.dataset.answerId == correctAnswerIndex);
     correctAnswer = correctAnswer[0];
 
     applyCorrectAnswerStyleTo(correctAnswer);
@@ -356,10 +385,10 @@ const app = (function (view, model) {
     view.showLoader();
 
     const data = new FormData(e.target);
-    const url = buildURL(data);
+    const url = _buildURL(data);
 
     // fetch questions
-    fetchQuestions(url)
+    _fetchQuestions(url)
   });
 
   document.addEventListener('load-question', function loadFirstQuestion(e) {
@@ -399,39 +428,39 @@ const app = (function (view, model) {
     if (e.target.closest('.question-card').classList.contains('js-answered')) return;
 
     const clickedLi = e.target;
-    const userAnswer = clickedLi.textContent;
-    const correctAnswer = model.getCorrectAnswer();
+    const userAnswer = clickedLi.dataset.answerId;
+    const correctAnswerIndex = model.getCorrectAnswerIndex();
+    // Save user answer in question object
+    model.saveUserAnswer(userAnswer);
 
-    if (userAnswer === correctAnswer) {
+    // userAnswer === correctAnswer
+    if (model.isAnswerCorrect(userAnswer)) {
       model.incrementScore();
 
       view.applyCorrectAnswerStyleTo(clickedLi);
       view.showNextQuestionButton();
-      console.log('you answered correctly');
     } else {
 
       view.applyIncorrectAnswerStyleTo(clickedLi);
-      view.showCorrectAnswer(correctAnswer);
+      view.showCorrectAnswer(correctAnswerIndex);
       view.showNextQuestionButton();
-      console.log('you answered incorrectly');
     }
 
   })
 
-  function buildURL(data) {
-    const _apiEndpoint = 'https://opentdb.com/api.php';
-    const _URL = new URL(_apiEndpoint);
+  function _buildURL(data) {
+    const apiEndpoint = 'https://opentdb.com/api.php';
+    const url = new URL(apiEndpoint);
     for (let [key, value] of data) {
       if (value === 'any') continue;
-      _URL.searchParams.set(key, value);
+      url.searchParams.set(key, value);
 
     }
-    console.log(_URL);
 
-    return _URL;
+    return url;
   }
 
-  function fetchQuestions(url) {
+  function _fetchQuestions(url) {
     const request = new XMLHttpRequest();
     request.onload = function handleResponse() {
       if (this.status === 200) {
