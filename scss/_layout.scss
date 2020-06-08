@@ -1,5 +1,5 @@
 #root {
-  max-width: 60rem;
+  max-width: 100%;
   margin: 0 auto;
   height: 100vh;
 }
@@ -13,8 +13,8 @@
 
 .main {
   padding: 2rem;
-  // height: 50%;
-  // background-color: var(--color-primary);
+  max-width: 60rem;
+  margin: 0 auto;
 }
 
 .loader {

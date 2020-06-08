@@ -172,7 +172,7 @@ input {
     letter-spacing: 0; }
 
 #root {
-  max-width: 60rem;
+  max-width: 100%;
   margin: 0 auto;
   height: 100vh; }
 
@@ -183,7 +183,9 @@ input {
   color: var(--color-white); }
 
 .main {
-  padding: 2rem; }
+  padding: 2rem;
+  max-width: 60rem;
+  margin: 0 auto; }
 
 .loader {
   position: absolute;
