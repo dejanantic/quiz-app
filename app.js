@@ -19,6 +19,9 @@ const modelController = (function () {
         correctAnswer: questionObj.correct_answer,
         answers: _shuffleAnswers([questionObj.correct_answer, ...questionObj.incorrect_answers]),
         userAnswer: null,
+        isUserAnswerCorrect() {
+          return this.answers[this.userAnswer] === this.correctAnswer ? true : false;
+        }
       }
 
       return question;
@@ -250,6 +253,17 @@ const viewController = (function () {
     questionCategory.textContent = questionObj.category;
     const questionDifficulty = _createElement('div', 'question-card__difficulty');
     questionDifficulty.textContent = questionObj.difficulty;
+    switch (questionDifficulty.textContent) {
+      case 'easy':
+        questionDifficulty.classList.add('easy');
+        break;
+      case 'medium':
+        questionDifficulty.classList.add('medium');
+        break;
+      default:
+        questionDifficulty.classList.add('hard');
+        break;
+    }
     questionDetails.append(questionCategory, questionDifficulty);
 
     const question = _createElement('h2', 'question-card__question');
@@ -257,7 +271,7 @@ const viewController = (function () {
     const btn = _createElement('button', 'btn');
     btn.classList.add('js-next-question');
     btn.classList.add('u-mg-top-md');
-    btn.textContent = 'Next question'
+    btn.textContent = 'Next question';
 
     const answers = _buildAnswers(questionObj.answers);
 
@@ -265,7 +279,6 @@ const viewController = (function () {
 
     _main.appendChild(questionCard);
 
-    // return questionCard;
   }
 
   function _buildAnswers(answersArr) {
@@ -283,6 +296,53 @@ const viewController = (function () {
     answersContainer.append(...HTMLanswers);
 
     return answersContainer;
+  }
+
+  function displayAllQuestions(allQuestions) {
+    const quizSummary = _getElement('.quiz-summary');
+
+    const questionCards = allQuestions.map(questionObj => {
+      const questionCard = _createElement('div', 'question-card');
+      questionCard.classList.add('u-mg-top-xl');
+      // Add separator line to all question cards except the first one
+      questionObj.index !== 0 ? questionCard.classList.add('separator') : null;
+
+      const questionDetails = _createElement('div', 'question-card__question-details');
+      const questionCategory = _createElement('div', 'question-card__category');
+      questionCategory.textContent = questionObj.category;
+      const questionDifficulty = _createElement('div', 'question-card__difficulty');
+      questionDifficulty.textContent = questionObj.difficulty;
+      switch (questionDifficulty.textContent) {
+        case 'easy':
+          questionDifficulty.classList.add('easy');
+          break;
+        case 'medium':
+          questionDifficulty.classList.add('medium');
+          break;
+        default:
+          questionDifficulty.classList.add('hard');
+          break;
+      }
+      questionDetails.append(questionCategory, questionDifficulty);
+
+      const question = _createElement('h2', 'question-card__question');
+      question.innerHTML = questionObj.text;
+
+      const answers = questionObj.isUserAnswerCorrect() ? _buildAnswers([questionObj.correctAnswer]) : _buildAnswers([questionObj.answers[questionObj.userAnswer], questionObj.correctAnswer]);
+
+      // Apply correct and incorrect styling to the answers
+      if (answers.childElementCount === 1) answers.children[0].classList.add('correct');
+      else {
+        answers.children[0].classList.add('incorrect');
+        answers.children[1].classList.add('correct');
+      }
+
+      questionCard.append(questionDetails, question, answers);
+
+      return questionCard;
+    })
+
+    quizSummary.append(...questionCards);
   }
 
   function applyCorrectAnswerStyleTo(answer) {
@@ -337,6 +397,9 @@ const viewController = (function () {
     const answersBtn = _createElement('button', 'btn');
     answersBtn.classList.add('btn--light');
     answersBtn.textContent = 'My answers';
+    answersBtn.addEventListener('click', function dispatchShowAllQuestionsEvent() {
+      this.dispatchEvent(new CustomEvent('show-all-questions', { bubbles: true }));
+    }, { once: true });
 
     const restartBtn = _createElement('button', 'btn');
     restartBtn.textContent = 'Restart Quiz';
@@ -369,6 +432,7 @@ const viewController = (function () {
     showQuizSummary: showQuizSummary,
     updateProgress: updateProgress,
     updateNextButtonText: updateNextButtonText,
+    displayAllQuestions: displayAllQuestions,
   }
 })();
 
@@ -410,6 +474,7 @@ const app = (function (view, model) {
     } else {
       view.updateProgress(model.progress);
       const question = model.serveNextQuestion();
+      // potentially insert model.incrementCurrentQuestionIndex(); so you avoid those - 1
       view.buildQuestionCard(question);
       if (model.isQuizOver()) view.updateNextButtonText();
     }
@@ -420,6 +485,8 @@ const app = (function (view, model) {
     if (e.target.tagName !== 'LI') return;
     // If the question card was answered, prevent further clicks
     if (e.target.closest('.question-card').classList.contains('js-answered')) return;
+    // If we are on the Quiz Summary page, no checking required
+    if (e.target.closest('.quiz-summary')) return;
 
     const clickedLi = e.target;
     const userAnswer = clickedLi.dataset.answerId;
@@ -427,7 +494,6 @@ const app = (function (view, model) {
     // Save user answer in question object
     model.saveUserAnswer(userAnswer);
 
-    // userAnswer === correctAnswer
     if (model.isAnswerCorrect(userAnswer)) {
       model.incrementScore();
 
@@ -441,6 +507,10 @@ const app = (function (view, model) {
     }
 
   })
+
+  document.addEventListener('show-all-questions', function showQuestionsAndAnswers() {
+    view.displayAllQuestions(model.questions);
+  });
 
   function _buildURL(data) {
     const apiEndpoint = 'https://opentdb.com/api.php';

@@ -42,10 +42,36 @@
     font-size: 1.6rem;
     font-weight: 100;
     display: flex;
+    align-items: baseline;
+    margin-bottom: 2rem;
+    text-transform: uppercase;
   }
 
   &__category {
     margin-right: auto;
+  }
+
+  &__difficulty {
+    padding: 0.5rem;
+    border: 2px solid var(--color-text-primary);
+    color: var(--color-text-primary);
+    border-radius: 4px;
+    font-weight: bold;
+
+    &.easy {
+      border-color: var(--color-green);
+      color: var(--color-green);
+    }
+
+    &.medium {
+      border-color: var(--color-orange);
+      color: var(--color-orange);
+    }
+
+    &.hard {
+      border-color: var(--color-red);
+      color: var(--color-red);
+    }
   }
 
   &__question {
@@ -151,6 +177,7 @@
   letter-spacing: 1px;
   padding: 1em 4em;
   border-radius: 4px;
+  cursor: pointer;
 
   &--light {
     border: 2px solid var(--color-primary);
