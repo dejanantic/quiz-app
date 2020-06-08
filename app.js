@@ -80,7 +80,6 @@ const modelController = (function () {
 
   return {
     init: () => {
-      console.log('Model controller initialized');
     },
     saveQuestions: saveQuestions,
     get questions() {
@@ -264,7 +263,9 @@ const viewController = (function () {
 
     questionCard.append(questionDetails, question, answers, btn);
 
-    return questionCard;
+    _main.appendChild(questionCard);
+
+    // return questionCard;
   }
 
   function _buildAnswers(answersArr) {
@@ -345,18 +346,15 @@ const viewController = (function () {
 
     btnContainer.append(restartBtn, answersBtn);
 
-    console.log(`You got ${score} out of ${totalQuestions} questions`);
-
     quizSummary.append(title, btnContainer);
 
-    return quizSummary;
+    _main.appendChild(quizSummary);
   }
 
   return {
     init() {
       clearView();
       _main.append(form);
-      console.log('View controller initialized');
     },
     main: _main,
     form: form,
@@ -396,9 +394,7 @@ const app = (function (view, model) {
 
     const question = model.serveNextQuestion();
 
-    const questionCard = view.buildQuestionCard(question);
-
-    view.main.appendChild(questionCard);
+    view.buildQuestionCard(question);
 
     view.hideLoader();
   })
@@ -410,13 +406,11 @@ const app = (function (view, model) {
 
     if (model.isQuizOver()) {
       const quizSummary = view.showQuizSummary(model.getScore(), model.questions.length);
-      view.main.appendChild(quizSummary);
       view.updateProgress(model.progress);
     } else {
       view.updateProgress(model.progress);
       const question = model.serveNextQuestion();
-      const questionCard = view.buildQuestionCard(question);
-      view.main.appendChild(questionCard);
+      view.buildQuestionCard(question);
       if (model.isQuizOver()) view.updateNextButtonText();
     }
   })
@@ -479,7 +473,6 @@ const app = (function (view, model) {
     init: () => {
       view.init();
       model.init();
-      console.log('app initialized');
     },
     model,
     view,
