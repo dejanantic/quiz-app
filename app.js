@@ -1,11 +1,13 @@
 'use strict'
 const modelController = (function () {
 
+  // Array to store the questions from Open Trivia Database
   let _questions = [];
   let _currentQuestionIndex = 0;
   let _score = 0;
 
   function saveQuestions(responseResults) {
+    // Prepare the questions so they are "easier" to use
     _questions = _prepareQuestions([...responseResults]);
   }
 
@@ -28,6 +30,7 @@ const modelController = (function () {
     });
   }
 
+  // Randomize the answer position in the answers array
   function _shuffleAnswers(answers) {
     let arr = [...answers];
     let result = [];
@@ -40,6 +43,7 @@ const modelController = (function () {
     return result;
   }
 
+  // Serve the next question and increment the currentQuestionIndex
   function serveNextQuestion() {
     const nextQuestion = _questions[_currentQuestionIndex++];
 
@@ -298,6 +302,7 @@ const viewController = (function () {
     return answersContainer;
   }
 
+  // Display all questions when user click "My answers" button at the end of the quiz
   function displayAllQuestions(allQuestions) {
     const quizSummary = _getElement('.quiz-summary');
 
@@ -328,6 +333,8 @@ const viewController = (function () {
       const question = _createElement('h2', 'question-card__question');
       question.innerHTML = questionObj.text;
 
+      // If the user answered correctly, display just the correct answer
+      // Otherwise, display user's answer and correct answer
       const answers = questionObj.isUserAnswerCorrect() ? _buildAnswers([questionObj.correctAnswer]) : _buildAnswers([questionObj.answers[questionObj.userAnswer], questionObj.correctAnswer]);
 
       // Apply correct and incorrect styling to the answers
@@ -366,13 +373,14 @@ const viewController = (function () {
     applyCorrectAnswerStyleTo(correctAnswer);
   }
 
-  // Mark question card as answered so that further clicks are not possible
+  // Flag question card as answered so that further clicks are not possible
   function _flagQuestionCard() {
     const questionCard = _getElement('.question-card');
 
     if (!questionCard.classList.contains('js-answered')) questionCard.classList.add('js-answered');
   }
 
+  // Shows the "Next Question" button when user clicks on an answer
   function showNextQuestionButton() {
     const btn = _getElement('.js-next-question');
     btn.style.visibility = 'visible';
@@ -382,11 +390,14 @@ const viewController = (function () {
     _progress.style.width = `${Math.floor(handler())}%`;
   }
 
+  // Updated the text in the "Next Question" button to "Finish Quiz"
+  // if answering last question of the quiz
   function updateNextButtonText() {
     const btn = _getElement('.js-next-question');
     btn.textContent = 'Finish Quiz';
   }
 
+  // Displays the "Quiz Summary" when the user has answered all the questions
   function showQuizSummary(score, totalQuestions) {
     const quizSummary = _createElement('div', 'quiz-summary');
     const title = _createElement('h2', 'quiz-summary__title');
@@ -438,9 +449,7 @@ const viewController = (function () {
 
 const app = (function (view, model) {
 
-
-  // Event listeners and stuff
-  // Maybe take the form out of the quizConfig function
+  // Submit quiz preferences and save the response
   view.form.addEventListener('submit', function passFormData(e) {
     e.preventDefault();
 
@@ -449,10 +458,10 @@ const app = (function (view, model) {
     const data = new FormData(e.target);
     const url = _buildURL(data);
 
-    // fetch questions
     _fetchQuestions(url)
   });
 
+  // Listen for the 'load-question' custom event in order to load the first question
   document.addEventListener('load-question', function loadFirstQuestion(e) {
     view.clearView();
 
@@ -464,6 +473,7 @@ const app = (function (view, model) {
   })
 
   document.addEventListener('click', function loadNextQuestion(e) {
+    // Only proceed forward if the user has clicked the "Next Question" button
     if (!e.target.classList.contains('js-next-question')) return;
 
     view.clearView();
@@ -474,7 +484,6 @@ const app = (function (view, model) {
     } else {
       view.updateProgress(model.progress);
       const question = model.serveNextQuestion();
-      // potentially insert model.incrementCurrentQuestionIndex(); so you avoid those - 1
       view.buildQuestionCard(question);
       if (model.isQuizOver()) view.updateNextButtonText();
     }
@@ -491,7 +500,8 @@ const app = (function (view, model) {
     const clickedLi = e.target;
     const userAnswer = clickedLi.dataset.answerId;
     const correctAnswerIndex = model.getCorrectAnswerIndex();
-    // Save user answer in question object
+
+    // Save user answer in the appropriate question object
     model.saveUserAnswer(userAnswer);
 
     if (model.isAnswerCorrect(userAnswer)) {
@@ -508,6 +518,8 @@ const app = (function (view, model) {
 
   })
 
+  // Listen for "show-all-questions" custom event to display all the questions
+  // and user's answers
   document.addEventListener('show-all-questions', function showQuestionsAndAnswers() {
     view.displayAllQuestions(model.questions);
   });
