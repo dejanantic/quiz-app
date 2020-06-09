@@ -141,8 +141,7 @@
     visibility: visible;
   }
 
-  &::before,
-  &::after {
+  &::before {
     content: "";
     position: absolute;
     display: block;
@@ -150,18 +149,11 @@
     left: 50%;
     transform: translate(-50%, -50%);
     border-radius: 50%;
-  }
-
-  &::before {
-    background-color: var(--color-primary);
+    border: 1.5rem solid var(--color-loader-background);
+    border-top: 1.5rem solid var(--color-primary);
     width: 9rem;
     height: 9rem;
-  }
-
-  &::after {
-    background-color: var(--color-white);
-    width: 5.5rem;
-    height: 5.5rem;
+    animation: spin 2s linear infinite;
   }
 }
 
