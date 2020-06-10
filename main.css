@@ -138,16 +138,16 @@ input {
 
 .loader {
   background-color: var(--color-white);
-  visibility: hidden; }
+  visibility: hidden;
+  display: flex;
+  align-items: center;
+  justify-content: center; }
   .loader.active {
     visibility: visible; }
   .loader::before {
     content: "";
     position: absolute;
     display: block;
-    top: 50%;
-    left: 50%;
-    transform: translate(-50%, -50%);
     border-radius: 50%;
     border: 1.5rem solid var(--color-loader-background);
     border-top: 1.5rem solid var(--color-primary);
