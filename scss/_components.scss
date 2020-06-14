@@ -179,3 +179,15 @@
     letter-spacing: 0;
   }
 }
+
+#response {
+  display: none;
+  background: var(--color-green-light);
+  border: 1px solid var(--color-green);
+  color: var(--color-green);
+  padding: 1rem;
+}
+
+#response.show {
+  display: block;
+}

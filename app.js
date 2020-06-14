@@ -102,6 +102,7 @@ const modelController = (function () {
     saveUserAnswer: saveUserAnswer,
     isAnswerCorrect: isAnswerCorrect,
   }
+
 })();
 
 const viewController = (function () {
@@ -445,6 +446,7 @@ const viewController = (function () {
     updateNextButtonText: updateNextButtonText,
     displayAllQuestions: displayAllQuestions,
   }
+
 })();
 
 const app = (function (view, model) {
@@ -559,6 +561,7 @@ const app = (function (view, model) {
     model,
     view,
   }
+
 })(viewController, modelController);
 
 app.init();
