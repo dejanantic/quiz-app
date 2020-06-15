@@ -1,6 +1,6 @@
 # Quiz App - Test Your Trivia Skills
 
-A simple little web app to test your trivia skills.
+A simple little web app to test your trivia skills. Everything built from scratch.
 
 > Built using MVC (Model-View-Controller) design pattern
 
