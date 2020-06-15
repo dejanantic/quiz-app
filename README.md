@@ -8,6 +8,6 @@ A simple little web app to test your trivia skills.
 
 > SASS
 
-### Deployed with GitHub Pages
+### App demo
 
-[Quiz App](https://dejanantic.github.io/quiz-app)
+Deployed with GitHub Pages - [Quiz App Demo](https://dejanantic.github.io/quiz-app/)
